@@ -1,9 +1,9 @@
 services:
   # The Node.js "Chef" - a private service
-  - type: pvt
+  - type: pserv # CORRECTED from pvt
     name: ai-builder-app
     env: docker
-    dockerfilePath: ./Dockerfile 
+    dockerfilePath: ./Dockerfile
 
   # The Nginx "Host" - a public web service
   - type: web
@@ -17,6 +17,6 @@ services:
     envVars:
     - key: NODE_SERVICE_ADDRESS
       fromService:
-        type: pvt
+        type: pserv # CORRECTED from pvt
         name: ai-builder-app
         property: hostport
