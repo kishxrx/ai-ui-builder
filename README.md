@@ -2,7 +2,7 @@
 
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) ![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
 
-## 🎯 Project Goal
+##  Project Goal
 
 The **`ai-ui-builder`** project is the foundational first phase for a future, more ambitious application. 
 
@@ -10,13 +10,13 @@ The immediate goal, which has been successfully achieved here, was to build and 
 
 ---
 
-## ✨ Key Improvisation: A Custom Node.js Backend
+##  Key Improvisation: A Custom Node.js Backend
 
 Instead of just deploying a static "under construction" page, this project was elevated by developing a **custom Node.js backend using the Express framework**. This transformed a simple infrastructure task into a full-stack application, demonstrating skills in both backend development and modern DevOps orchestration.
 
 ---
 
-## 🏗️ Architecture
+##  Architecture
 
 The application runs in a multi-container environment, following a professional reverse proxy pattern.
 
@@ -28,7 +28,7 @@ The application runs in a multi-container environment, following a professional 
 
 ---
 
-## ☁️ Cloud Deployment on Render
+##  Cloud Deployment on Render
 
 This project is deployed live on the internet for free using **Render**. The deployment was achieved entirely through the web interface, without needing a command line.
 
@@ -42,7 +42,7 @@ Once these files were in the repository, we connected it to a new **Blueprint** 
 
 ---
 
-## 🚀 How to Run Locally
+## How to Run Locally
 
 ### Prerequisites
 * **Docker:** Must be installed and running.
@@ -56,7 +56,7 @@ Once these files were in the repository, we connected it to a new **Blueprint** 
 
 ---
 
-## 🔬 Debugging & Key Learnings
+##  Debugging & Key Learnings
 
 This project involved overcoming several real-world technical challenges. Each error provided a critical learning opportunity.
 
