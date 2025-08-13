@@ -11,12 +11,10 @@ services:
     env: docker
     dockerfilePath: ./Dockerfile.nginx
     dockerContext: .
-    ports:
-    - port: 80
-      protocol: TCP
+    # The entire 'ports' block that was here has been REMOVED.
     envVars:
     - key: NODE_SERVICE_ADDRESS
       fromService:
         type: pserv
         name: ai-builder-app
-        property: url # CORRECTED from hostport
+        property: url
