@@ -1,6 +1,6 @@
 services:
   # The Node.js "Chef" - a private service
-  - type: pserv # CORRECTED from pvt
+  - type: pserv
     name: ai-builder-app
     env: docker
     dockerfilePath: ./Dockerfile
@@ -17,6 +17,6 @@ services:
     envVars:
     - key: NODE_SERVICE_ADDRESS
       fromService:
-        type: pserv # CORRECTED from pvt
+        type: pserv
         name: ai-builder-app
-        property: hostport
+        property: url # CORRECTED from hostport
