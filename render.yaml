@@ -1,0 +1,22 @@
+services:
+  # The Node.js "Chef" - a private service
+  - type: pvt
+    name: ai-builder-app
+    env: docker
+    dockerfilePath: ./Dockerfile 
+
+  # The Nginx "Host" - a public web service
+  - type: web
+    name: ai-builder-nginx
+    env: docker
+    dockerfilePath: ./Dockerfile.nginx
+    dockerContext: .
+    ports:
+    - port: 80
+      protocol: TCP
+    envVars:
+    - key: NODE_SERVICE_ADDRESS
+      fromService:
+        type: pvt
+        name: ai-builder-app
+        property: hostport
