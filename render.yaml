@@ -1,24 +1,6 @@
 services:
-  # The Node.js app - public web service (but we'll block external traffic via Nginx rules)
   - type: web
-    name: ai-builder-app
-    env: docker
-    dockerfilePath: ./Dockerfile
-
-  # The Nginx reverse proxy - public entry point
-  - type: web
-    name: ai-builder-nginx
+    name: ai-builder
     env: docker
     dockerfilePath: ./Dockerfile.nginx
     dockerContext: .
-    envVars:
-      - key: NODE_SERVICE_HOST
-        fromService:
-          type: web
-          name: ai-builder-app
-          property: host
-      - key: NODE_SERVICE_PORT
-        fromService:
-          type: web
-          name: ai-builder-app
-          property: port
