@@ -1,16 +1,28 @@
-server {
-    listen 80;
+# Use a base image with both Node.js and Nginx
+FROM node:18
 
-    location / {
-        # Allow only traffic from Render's internal network
-        allow ${NODE_SERVICE_HOST};
-        deny all;
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
-        proxy_pass http://${NODE_SERVICE_HOST}:${NODE_SERVICE_PORT};
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-    }
-}
+# Set up your Node.js app
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+# Build your Node.js app (optional, if it has a build step)
+# RUN npm run build
+
+# Copy Nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80 for web traffic
+EXPOSE 80
+
+# Use supervisord to run both Node.js and Nginx
+RUN npm install -g pm2
+RUN echo '#!/bin/sh\n\
+pm2 start server.js --no-daemon &\n\
+nginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
+
+CMD ["/start.sh"]
