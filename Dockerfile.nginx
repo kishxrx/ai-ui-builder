@@ -1,26 +1,31 @@
-# Use a base image with both Node.js and Nginx
+# Base image with Node.js
 FROM node:18
 
 # Install Nginx
 RUN apt-get update && apt-get install -y nginx && rm -rf /var/lib/apt/lists/*
 
-# Set up your Node.js app
+# Set working directory for Node.js app
 WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
 
-# Build your Node.js app (optional, if it has a build step)
-# RUN npm run build
+# Copy package.json and package-lock.json from terraform-docker-task
+COPY terraform-docker-task/package*.json ./
+
+# Install Node.js dependencies
+RUN npm install
+
+# Copy the rest of the app source code from terraform-docker-task
+COPY terraform-docker-task/ .
 
 # Copy Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose port 80 for web traffic
+# Expose ports
 EXPOSE 80
 
-# Use supervisord to run both Node.js and Nginx
+# Install PM2 for process management
 RUN npm install -g pm2
+
+# Start both Node.js and Nginx
 RUN echo '#!/bin/sh\n\
 pm2 start server.js --no-daemon &\n\
 nginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
