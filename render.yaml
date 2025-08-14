@@ -1,20 +1,24 @@
 services:
-  # The Node.js "Chef" - a private service
+  # The Node.js app - private
   - type: pserv
     name: ai-builder-app
     env: docker
     dockerfilePath: ./Dockerfile
 
-  # The Nginx "Host" - a public web service
+  # The Nginx reverse proxy - public
   - type: web
     name: ai-builder-nginx
     env: docker
     dockerfilePath: ./Dockerfile.nginx
     dockerContext: .
-    # The entire 'ports' block that was here has been REMOVED.
     envVars:
-    - key: NODE_SERVICE_ADDRESS
-      fromService:
-        type: pserv
-        name: ai-builder-app
-        property: url
+      - key: NODE_SERVICE_HOST
+        fromService:
+          type: pserv
+          name: ai-builder-app
+          property: host
+      - key: NODE_SERVICE_PORT
+        fromService:
+          type: pserv
+          name: ai-builder-app
+          property: port
