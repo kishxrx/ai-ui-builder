@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: ai-builder
-    env: docker
-    dockerfilePath: ./Dockerfile.nginx
-    dockerContext: .
