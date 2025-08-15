@@ -16,16 +16,19 @@ RUN npm install
 # Copy the rest of the app source code from terraform-docker-task
 COPY terraform-docker-task/ .
 
-# Copy Nginx config
+# Remove default Nginx site config
+RUN rm /etc/nginx/sites-enabled/default
+
+# Copy custom Nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Expose ports
+# Expose HTTP port
 EXPOSE 80
 
-# Install PM2 for process management
+# Install PM2 to run Node.js in background
 RUN npm install -g pm2
 
-# Start both Node.js and Nginx
+# Script to start both Node.js and Nginx
 RUN echo '#!/bin/sh\n\
 pm2 start server.js --no-daemon &\n\
 nginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
