@@ -2,65 +2,58 @@
 
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/nginx-%23009639.svg?style=for-the-badge&logo=nginx&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white) ![Render](https://img.shields.io/badge/Render-%46E3B7.svg?style=for-the-badge&logo=render&logoColor=white)
 
-##  Project Goal
+# Project Portfolio: Infrastructure as code (IaC) with Terraform and Docker
+![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white) ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white) ![Jenkins](https://img.shields.io/badge/jenkins-%232C5263.svg?style=for-the-badge&logo=jenkins&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)
 
-The **`ai-ui-builder`** project is the foundational first phase for a future, more ambitious application. 
+## Project Goal
 
-The immediate goal, which has been successfully achieved here, was to build and deploy a robust, scalable backend infrastructure using modern DevOps principles. This project creates the essential groundwork and proves out the core deployment pipeline—from local code to a live, public URL—upon which the future **AI UI Builder** will be constructed.
-
----
-
-##  Key Improvisation: A Custom Node.js Backend
-
-Instead of just deploying a static "under construction" page, this project was elevated by developing a **custom Node.js backend using the Express framework**. This transformed a simple infrastructure task into a full-stack application, demonstrating skills in both backend development and modern DevOps orchestration.
+This project documents a comprehensive journey through modern DevOps practices, from building a CI/CD pipeline to managing infrastructure as code. The primary objective was to master the full lifecycle of a containerized application, including automated builds, multi-container orchestration, and declarative infrastructure management with Terraform.
 
 ---
 
-##  Architecture
+## Architecture and Workflow
 
-The application runs in a multi-container environment, following a professional reverse proxy pattern.
+The final architecture demonstrates a professional, multi-stage workflow controlled by code:
 
-`User's Browser` -> `NGINX Container (Host)` -> `Private Network` -> `Node.js Container (Chef)`
+`Terraform Code` -> `Terraform Engine` -> `Docker Engine API` -> `(NGINX Container <=> Private Network <=> Node.js Container)`
 
-* The **Nginx Container** acts as the public-facing gateway, handling all incoming web traffic.
-* The **Node.js Container** runs the custom Express application in isolation.
-* A **Private Network** allows the two containers to communicate securely and efficiently.
-
----
-
-##  Cloud Deployment on Render
-
-This project is deployed live on the internet for free using **Render**. The deployment was achieved entirely through the web interface, without needing a command line.
-
-### Deployment Process
-The key was to add the necessary configuration files directly to our existing GitHub repository:
-
-1.  **`render.yaml`:** A blueprint file was created to define the two services (the private Node.js app and the public Nginx web service) and how they connect.
-2.  **`Dockerfile.nginx` & `nginx.conf`:** A dedicated Dockerfile and Nginx configuration were added to build our reverse proxy correctly in Render's cloud environment.
-
-Once these files were in the repository, we connected it to a new **Blueprint** service on Render. Render automatically read the configuration, built both containers, established the private network, and deployed the application, making it available to the world via a public `.onrender.com` URL.
+1.  **Infrastructure as Code (IaC):** **Terraform** is used as the single source of truth to define all components: the Docker containers, the private network connecting them, and port mappings. This replaces manual `docker` commands with a declarative, version-controlled system.
+2.  **CI/CD Automation:** A **Jenkins** pipeline automatically builds the application's Docker image whenever new code is pushed, ensuring a reliable and repeatable build process.
 
 ---
 
-## How to Run Locally
+## Key Learnings & Troubleshooting Gauntlet
 
-### Prerequisites
-* **Docker:** Must be installed and running.
-* **Terraform:** Must be installed.
+This journey combined high-level IaC concepts with a series of hands-on, real-world debugging challenges.
 
-### Instructions
-1.  **Initialize Terraform:** `terraform init`
-2.  **Build and Deploy:** `terraform apply` (and type `yes`)
-3.  **Access The Application:** [http://localhost:8080](http://localhost:8080)
-4.  **Shutdown and Cleanup:** `terraform destroy`
+### IaC Concepts Mastered
+
+* **Declarative Infrastructure:** We learned to define the **desired end state** in `.tf` files, allowing Terraform to handle the complex logic of creating, updating, and destroying resources.
+* **The Plan/Apply/Destroy Cycle:** We mastered the critical workflow of using `terraform plan` for safe previews, `terraform apply` to execute changes, and `terraform destroy` for clean resource removal.
+* **State Management:** We understood the role of the `terraform.tfstate` file as Terraform's "memory," which is essential for managing infrastructure over its lifecycle.
+
+### Real-World Debugging Showcase
+
+#### **Challenge 1: CI/CD Pipeline Setup (Jenkins)**
+
+* **Error:** `npm: not found` during the build stage.
+    * **Solution:** Resolved by replacing the minimal default agent with a **Docker Agent** (`node:20-alpine`), ensuring a consistent and dependency-complete build environment.
+* **Error:** `docker: not found` (The Docker-in-Docker Problem).
+    * **Solution:** Solved by mounting the host's Docker socket (`-v /var/run/docker.sock...`) into the Jenkins container, granting it permission to execute `docker` commands.
+
+#### **Challenge 2: Multi-Container Communication (Nginx + Node.js)**
+
+* **Error:** `502 Bad Gateway` due to network isolation.
+    * **Solution:** Created a dedicated **`docker_network`** in Terraform, allowing the Nginx and Node.js containers to communicate securely over a private network.
+* **Error:** `502 Bad Gateway` due to an application crash.
+    * **Solution:** Inspected container logs (`docker logs`) to find a fatal error caused by a broken beta version of the `express` dependency. Pinned the version in `package.json` to a known stable release.
+* **Error:** Lingering `502 Bad Gateway` due to a stale cache.
+    * **Solution:** After fixing the code, the issue persisted. A full system cleanup with **`docker system prune -a -f`** cleared Docker's cache, forcing a fresh image rebuild with the corrected code.
 
 ---
 
-##  Debugging & Key Learnings
+## Future Development: The AI UI Builder Vision
 
-This project involved overcoming several real-world technical challenges. Each error provided a critical learning opportunity.
+This project serves as the essential foundational groundwork for a more ambitious future application: an **AI UI Builder**. The robust IaC and CI/CD skills practiced here are the critical building blocks required to design, deploy, and manage the complex backend systems needed for such an advanced tool.
 
-1.  **Inter-Container Communication:** Solved a `502 Bad Gateway` error by creating a `docker_network` to allow the Nginx and Node.js containers to communicate.
-2.  **Dependency Mismatches:** Fixed another `502` error by inspecting logs (`docker logs`) and correcting the `express` version in `package.json` from a broken beta version to a stable one.
-3.  **Docker Cache Issues:** Resolved the final, lingering `502` error by performing a full system cleanup with `docker system prune -a -f`, which forced Docker to rebuild the image from scratch with our corrected code.
  
